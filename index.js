@@ -84,3 +84,43 @@ responsiveChatPush('.chat', 'John Doe', 'you', '08.03.2016 14:37:12', 'Yes, this
 if (parent == top) {
   $("a.article").show();
 }
+
+/* Adobewordpress id'sine sahip öğenin scrollunu en alta çekmemizi sağlayan fonksiyonumuz */
+function scrollDown(){
+  var focusBottom = document.getElementById("adobewordpress");
+  focusBottom.scrollTop = focusBottom.scrollHeight;
+}
+ 
+/* Eğer mesaj yazıldıktan sonra submit düğmesine değil de ENTER tuşuna basılırsa formun iletilmesini sağlayalım */
+$("input").keypress(function(event) {
+    if (event.which == 13) {
+        event.preventDefault();
+        $('form.chat input[type="submit"]').click();
+    }
+});
+/* Form kullanılırsa çalışacak temel click fonksiyonu */
+$('form.chat input[type="submit"]').click(function(event){
+  event.preventDefault(); // Sayfanın yeniden yüklenmesini engelleyelim.
+  var message = $('form.chat input[type="text"]').val(); // Yazılan mesajı message değişkenine kaydedelim
+  if( $('form.chat input[type="text"]').val()) { // Eğer mesaj yazılmışsa
+    var d = new Date(); // Mesaj yazılma tarihini gösterelim
+    var clock = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+    var month = d.getMonth()+1;
+    var day = d.getDate();
+    var currentDate =
+        ((''+day).length<2 ? '0' : '') + day + '.' +
+        ((''+month).length<2 ? '0' : '') + month + '.' +
+        d.getFullYear() +'&nbsp;&nbsp;'+ clock;
+    /* Aşağıda mesajı ve yazılma tarihini panoya ekliyoruz */
+    $('form.chat div.messages').append('<div class="message"><div class="myMessage"><p>'+message+'</p><date>'+currentDate+'</date></div></div>');
+    setTimeout(function() {
+      $('form.chat > span').addClass('spinner'); // Yukarıdaki yeşil bar (spinner) aktif olur
+    }, 100);
+    setTimeout(function() {
+      $('form.chat > span').removeClass('spinner'); // Spinner kapanır
+    }, 2000);
+  }
+  $('form.chat input[type="text"]').val(''); // Mesaj yazdığımız input'un value değeri sıfırlanır
+  scrollDown(); // Pano ekranı aşağı kaydırılır
+});
+
